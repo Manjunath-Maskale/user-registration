@@ -1,9 +1,11 @@
 package com.cih.userregistration.service;
 
 import com.cih.userregistration.controller.UserNotFoundException;
-import com.cih.userregistration.repository.UserRepository;
 import com.cih.userregistration.entities.User;
+import com.cih.userregistration.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,5 +49,10 @@ public class UserService {
 
     public List<User> findByLastName(String lastName) {
             return userRepository.findByLastName(lastName);
+    }
+
+    public List<User> findByPageNumber(int pageNumber){
+        Pageable page = PageRequest.of(pageNumber, 10);
+        return userRepository.findWithPageable(page);
     }
 }

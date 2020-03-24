@@ -14,9 +14,8 @@ public class UserController {
 
     public final UserService userService;
 
-    //double check if this is RESTful
-    @GetMapping("/all")
-    public List<User> findAll() {
+    @GetMapping
+    public List<User> findAll(@RequestParam(value = "lastName", required = false) String lastName) {
         return userService.findAll();
     }
 
@@ -40,8 +39,13 @@ public class UserController {
         userService.deleteUserById(id);
     }
 
-    @GetMapping()
-    public List<User> findByLastName(@RequestParam(value = "lastName") String lastName){
+    @GetMapping
+    public List<User> findByLastName(@RequestParam(value = "lastName", required = false) String lastName){
         return userService.findByLastName(lastName);
+    }
+
+    @GetMapping("/page/{pageNumber}")
+    public List<User> findByPageNumber(@PathVariable int pageNumber){
+        return userService.findByPageNumber(pageNumber);
     }
 }

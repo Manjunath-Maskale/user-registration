@@ -1,0 +1,11 @@
+---
+applications:
+- name: user-registration
+  memory: 1G
+  instances: 1
+  timeout: 100
+  path: build/libs/user-registration-1.0.0.jar
+  buildpacks:
+  - java_buildpack_offline
+  service:
+  - user-registration-db

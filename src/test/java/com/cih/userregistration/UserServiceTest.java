@@ -10,7 +10,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -148,5 +151,16 @@ class UserServiceTest {
 
         assertThat(actual).isEqualTo(singletonList(User.builder().firstName("John").lastName("Hopkins").build()));
         verify(userRepository).findByLastName("Hopkins");
+    }
+
+    @Test
+    void findByPageNumber(){
+        List<User> pageResult = Collections.nCopies(10, User.builder().build());
+        when(userRepository.findWithPageable(any(Pageable.class))).thenReturn(pageResult);
+
+        List<User> actual = userService.findByPageNumber(2);
+
+        assertThat(actual).isEqualTo(pageResult);
+        verify(userRepository).findWithPageable(PageRequest.of(2, 10));
     }
 }

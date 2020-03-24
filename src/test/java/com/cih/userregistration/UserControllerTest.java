@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.Collections.*;
@@ -79,5 +80,16 @@ class UserControllerTest {
 
         assertThat(actual).isEqualTo(singletonList(User.builder().firstName("Bob").lastName("Evans").build()));
         verify(userService).findByLastName("Evans");
+    }
+
+    @Test
+    void findByPageNumber(){
+        List<User> pageResult = Collections.nCopies(10, User.builder().build());
+        when(userService.findByPageNumber(anyInt())).thenReturn(pageResult);
+
+        List<User> actual = userController.findByPageNumber(4);
+
+        assertThat(actual).isEqualTo(pageResult);
+        verify(userService).findByPageNumber(4);
     }
 }
