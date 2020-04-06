@@ -14,8 +14,8 @@ public class UserController {
 
     public final UserService userService;
 
-    @GetMapping
-    public List<User> findAll(@RequestParam(value = "lastName", required = false) String lastName) {
+    @GetMapping("/all")
+    public List<User> findAll() {
         return userService.findAll();
     }
 
@@ -30,22 +30,34 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public User updateUserById(@RequestBody User user, @PathVariable Long id){
+    public User updateUserById(@RequestBody User user, @PathVariable Long id) {
         return userService.updateUser(user, id);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUserById(@PathVariable Long id){
+    public void deleteUserById(@PathVariable Long id) {
         userService.deleteUserById(id);
     }
 
     @GetMapping
-    public List<User> findByLastName(@RequestParam(value = "lastName", required = false) String lastName){
+    public List<User> findByLastName(@RequestParam(value = "lastName", required = false) String lastName) {
         return userService.findByLastName(lastName);
     }
 
-    @GetMapping("/page/{pageNumber}")
-    public List<User> findByPageNumber(@PathVariable int pageNumber){
-        return userService.findByPageNumber(pageNumber);
+    @GetMapping("/page/{pageNumber}/")
+    public List<User> findByFilter(@RequestParam(value = "firstName", required = false) String firstName,
+                                   @RequestParam(value = "lastName", required = false) String lastName,
+                                   @RequestParam(value = "address", required = false) String address,
+                                   @RequestParam(value = "phoneNumber", required = false) String phoneNumber,
+                                   @RequestParam(value = "email", required = false) String email,
+                                   @PathVariable int pageNumber) {
+        User filteredUser = User.builder()
+                .lastName(lastName)
+                .firstName(firstName)
+                .phoneNumber(phoneNumber)
+                .address(address)
+                .email(email)
+                .build();
+        return userService.findByFilter(filteredUser, pageNumber);
     }
 }

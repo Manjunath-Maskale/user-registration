@@ -84,12 +84,47 @@ class UserControllerTest {
 
     @Test
     void findByPageNumber(){
-        List<User> pageResult = Collections.nCopies(10, User.builder().build());
-        when(userService.findByPageNumber(anyInt())).thenReturn(pageResult);
+        List<User> pageResult = Collections.nCopies(10, User.builder()
+                .firstName("first")
+                .lastName("last")
+                .address("address")
+                .phoneNumber("phone")
+                .email("email")
+                .build());
+        when(userService.findByFilter(any(User.class), anyInt())).thenReturn(pageResult);
 
-        List<User> actual = userController.findByPageNumber(4);
+        List<User> actual = userController.findByFilter("first",
+                "last",
+                "address",
+                "phone",
+                "email",
+                4);
 
         assertThat(actual).isEqualTo(pageResult);
-        verify(userService).findByPageNumber(4);
+        verify(userService).findByFilter(User.builder()
+                .firstName("first")
+                .lastName("last")
+                .address("address")
+                .phoneNumber("phone")
+                .email("email")
+                .build(),4);
+    }
+
+    @Test
+    void findByPageNumber_nullSearchFields(){
+        List<User> pageResult = Collections.nCopies(10, User.builder().firstName("first").build());
+        when(userService.findByFilter(any(User.class), anyInt())).thenReturn(pageResult);
+
+        List<User> actual = userController.findByFilter("first",
+                null,
+                null,
+                null,
+                null,
+                4);
+
+        assertThat(actual).isEqualTo(pageResult);
+        verify(userService).findByFilter(User.builder()
+                .firstName("first")
+                .build(),4);
     }
 }

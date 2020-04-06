@@ -51,8 +51,14 @@ public class UserService {
             return userRepository.findByLastName(lastName);
     }
 
-    public List<User> findByPageNumber(int pageNumber){
+    public List<User> findByFilter(User filteredUser, int pageNumber) {
         Pageable page = PageRequest.of(pageNumber, 10);
-        return userRepository.findWithPageable(page);
+        return userRepository
+                .findUserByFirstNameAndLastNameAndAddressAndEmailAndPhoneNumber(filteredUser.getFirstName(),
+                        filteredUser.getLastName(),
+                        filteredUser.getAddress(),
+                        filteredUser.getEmail(),
+                        filteredUser.getPhoneNumber(),
+                        page).getContent();
     }
 }

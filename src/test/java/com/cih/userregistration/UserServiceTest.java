@@ -1,6 +1,5 @@
 package com.cih.userregistration;
 
-import com.cih.userregistration.controller.UserNotFoundAdvice;
 import com.cih.userregistration.controller.UserNotFoundException;
 import com.cih.userregistration.entities.User;
 import com.cih.userregistration.repository.UserRepository;
@@ -10,17 +9,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static java.util.Collections.*;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
@@ -154,13 +154,38 @@ class UserServiceTest {
     }
 
     @Test
-    void findByPageNumber(){
-        List<User> pageResult = Collections.nCopies(10, User.builder().build());
-        when(userRepository.findWithPageable(any(Pageable.class))).thenReturn(pageResult);
+    void findByFilter(){
+        User user = User.builder().firstName("name").lastName("lastname").email("email").phoneNumber("phone").address("address").build();
+        Page<User> userPage = new PageImpl<>(singletonList(user));
+        when(userRepository.findUserByFirstNameAndLastNameAndAddressAndEmailAndPhoneNumber(
+                anyString(),
+                anyString(),
+                anyString(),
+                anyString(),
+                anyString(),
+                any(Pageable.class))).thenReturn(userPage);
 
-        List<User> actual = userService.findByPageNumber(2);
+        List<User> actual = userService.findByFilter(user, 2);
 
-        assertThat(actual).isEqualTo(pageResult);
-        verify(userRepository).findWithPageable(PageRequest.of(2, 10));
+        assertThat(actual).isEqualTo(userPage.getContent());
+        verify(userRepository).findUserByFirstNameAndLastNameAndAddressAndEmailAndPhoneNumber("name", "lastname", "address", "email", "phone", PageRequest.of(2, 10));
+    }
+
+    @Test
+    void findByFilter_nullSearchFields(){
+        User user = User.builder().lastName("lastname").build();
+        Page<User> userPage = new PageImpl<>(singletonList(user));
+        when(userRepository.findUserByFirstNameAndLastNameAndAddressAndEmailAndPhoneNumber(
+                eq(null),
+                anyString(),
+                eq(null),
+                eq(null),
+                eq(null),
+                any(Pageable.class))).thenReturn(userPage);
+
+        List<User> actual = userService.findByFilter(user, 9);
+
+        assertThat(actual).isEqualTo(userPage.getContent());
+       verify(userRepository).findUserByFirstNameAndLastNameAndAddressAndEmailAndPhoneNumber(null, "lastname", null, null, null, PageRequest.of(9, 10));
     }
 }
