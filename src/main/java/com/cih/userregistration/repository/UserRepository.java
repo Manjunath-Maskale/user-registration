@@ -8,8 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
@@ -25,5 +23,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
                                                                               @Param("phoneNumber") String phoneNumber,
                                                                               Pageable pageable);
 
-    List<User> findByLastName(String lastName);
 }

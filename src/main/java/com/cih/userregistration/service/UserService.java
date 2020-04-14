@@ -47,10 +47,6 @@ public class UserService {
                 });
     }
 
-    public List<User> findByLastName(String lastName) {
-            return userRepository.findByLastName(lastName);
-    }
-
     public List<User> findByFilter(User filteredUser, int pageNumber) {
         Pageable page = PageRequest.of(pageNumber, 10);
         return userRepository

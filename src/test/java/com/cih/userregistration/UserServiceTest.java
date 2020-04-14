@@ -143,17 +143,6 @@ class UserServiceTest {
     }
 
     @Test
-    void findByLastName(){
-        when(userRepository.findByLastName(anyString()))
-                .thenReturn(singletonList(User.builder().firstName("John").lastName("Hopkins").build()));
-
-        List<User> actual = userService.findByLastName("Hopkins");
-
-        assertThat(actual).isEqualTo(singletonList(User.builder().firstName("John").lastName("Hopkins").build()));
-        verify(userRepository).findByLastName("Hopkins");
-    }
-
-    @Test
     void findByFilter(){
         User user = User.builder().firstName("name").lastName("lastname").email("email").phoneNumber("phone").address("address").build();
         Page<User> userPage = new PageImpl<>(singletonList(user));

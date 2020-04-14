@@ -73,16 +73,6 @@ class UserControllerTest {
     }
 
     @Test
-    void findByLastName(){
-        when(userService.findByLastName(anyString())).thenReturn(singletonList(User.builder().firstName("Bob").lastName("Evans").build()));
-
-        List<User> actual = userController.findByLastName("Evans");
-
-        assertThat(actual).isEqualTo(singletonList(User.builder().firstName("Bob").lastName("Evans").build()));
-        verify(userService).findByLastName("Evans");
-    }
-
-    @Test
     void findByPageNumber(){
         List<User> pageResult = Collections.nCopies(10, User.builder()
                 .firstName("first")
